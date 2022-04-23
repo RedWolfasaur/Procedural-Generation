@@ -150,45 +150,45 @@ public class Grid<T> {
                 }
             }
             return;
-        }
-
-        ArrayList<Item<T>> acceptableNeighbors = new ArrayList<Item<T>>();
-
-        for (Item ite : itemList) {
-            acceptableNeighbors.add(ite);
-        }
-        for (int i = 0; i < 4; i++) {
-            if (!dirCheck[i]) {
-                continue;
             }
-            switch (i) {
-                case 0:
-                    acceptableNeighbors.retainAll(gridArray[y + 1][x]
-                        .getAcceptableNeighbors());
-                    break;
-                case 1:
-                    acceptableNeighbors.retainAll(gridArray[y][x + 1]
-                        .getAcceptableNeighbors());
-                    break;
-                case 2:
-                    acceptableNeighbors.retainAll(gridArray[y - 1][x]
-                        .getAcceptableNeighbors());
-                    break;
-                case 3:
-                    acceptableNeighbors.retainAll(gridArray[y][x - 1]
-                        .getAcceptableNeighbors());
-                    break;
+    
+            ArrayList<Item<T>> acceptableNeighbors = new ArrayList<Item<T>>();
+    
+            for (Item ite : itemList) {
+                acceptableNeighbors.add(ite);
             }
-        }
-
-        for (Item<T> it : gridArray[y][x].getAcceptableNeighbors()) {
-            if (!acceptableNeighbors.contains(it)) {
-                gridArray[y][x].setAcceptableNeighbors(acceptableNeighbors);
-
-                calculateSurroundingsOfUncollapse(x, y, true);
-
+            for (int i = 0; i < 4; i++) {
+                if (!dirCheck[i]) {
+                    continue;
+                }
+                switch (i) {
+                    case 0:
+                        acceptableNeighbors.retainAll(gridArray[y + 1][x]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 1:
+                        acceptableNeighbors.retainAll(gridArray[y][x + 1]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 2:
+                        acceptableNeighbors.retainAll(gridArray[y - 1][x]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 3:
+                        acceptableNeighbors.retainAll(gridArray[y][x - 1]
+                            .getAcceptableNeighbors());
+                        break;
+                }
             }
-        }
+    
+            for (Item<T> it : gridArray[y][x].getAcceptableNeighbors()) {
+                if (!acceptableNeighbors.contains(it)) {
+                    gridArray[y][x].setAcceptableNeighbors(acceptableNeighbors);
+    
+                    calculateSurroundingsOfUncollapse(x, y, true);
+    
+                }
+            }
 
     }
 
@@ -239,54 +239,56 @@ public class Grid<T> {
                 }
             }
             return;
-        }
-
-        ArrayList<Item<T>> acceptableNeighbors = new ArrayList<Item<T>>();
-
-        for (Item<T> ite : itemList) {
-            acceptableNeighbors.add(ite);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            if (!dirCheck[i]) {
-                continue;
             }
-            switch (i) {
-                case 0:
-                    acceptableNeighbors.retainAll(gridArray[y + 1][x]
-                        .getAcceptableNeighbors());
-                    break;
-                case 1:
-                    acceptableNeighbors.retainAll(gridArray[y][x + 1]
-                        .getAcceptableNeighbors());
-                    break;
-                case 2:
-                    acceptableNeighbors.retainAll(gridArray[y - 1][x]
-                        .getAcceptableNeighbors());
-                    break;
-                case 3:
-                    acceptableNeighbors.retainAll(gridArray[y][x - 1]
-                        .getAcceptableNeighbors());
-                    break;
+    
+            ArrayList<Item<T>> acceptableNeighbors = new ArrayList<Item<T>>();
+    
+            for (Item<T> ite : itemList) {
+                acceptableNeighbors.add(ite);
             }
-        }
-        int size = acceptableNeighbors.size();
-        for (int i = 0; i < size; i++) {
-            acceptableNeighbors.addAll(acceptableNeighbors.get(i)
-                .getAcceptableNeighborsWeighted());
-        }
-
-        ArrayList<Item<T>> newList = (ArrayList<Item<T>>)itemList.clone();
-        newList.retainAll(acceptableNeighbors);
-
-        for (Item<T> it : gridArray[y][x].getAcceptableNeighbors()) {
-            if (!newList.contains(it)) {
-                gridArray[y][x].setAcceptableNeighbors(newList);
-
-                calculateSurroundingsOfUncollapse(x, y, true);
-
+    
+            for (int i = 0; i < 4; i++) {
+                if (!dirCheck[i]) {
+                    continue;
+                }
+                switch (i) {
+                    case 0:
+                        acceptableNeighbors.retainAll(gridArray[y + 1][x]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 1:
+                        acceptableNeighbors.retainAll(gridArray[y][x + 1]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 2:
+                        acceptableNeighbors.retainAll(gridArray[y - 1][x]
+                            .getAcceptableNeighbors());
+                        break;
+                    case 3:
+                        acceptableNeighbors.retainAll(gridArray[y][x - 1]
+                            .getAcceptableNeighbors());
+                        break;
+                }
             }
-        }
+            int size = acceptableNeighbors.size();
+            for (int i = 0; i < size; i++) {
+                acceptableNeighbors.addAll(acceptableNeighbors.get(i)
+                    .getAcceptableNeighborsWeighted());
+            }
+    
+            ArrayList<Item<T>> newList = (ArrayList<Item<T>>)itemList.clone();
+            newList.retainAll(acceptableNeighbors);
+    
+            if (gridArray[y][x].getCollapse()==0)
+            
+            for (Item<T> it : gridArray[y][x].getAcceptableNeighbors()) {
+                if (!newList.contains(it)) {
+                    gridArray[y][x].setAcceptableNeighbors(newList);
+    
+                    calculateSurroundingsOfUncollapse(x, y, true);
+    
+                }
+            }
 
     }
 
@@ -304,33 +306,12 @@ public class Grid<T> {
 
     }
 
-
-    public int correctY(int y) {
-        return gridArray.length - (y);
-    }
-
-
-    public int correctX(int x) {
-        return (x - 1);
-    }
-
-
     /**
      * This is pain. I would change it to match the one below, but that would be
      * more pain
      */
     public void add(int entry, int x, int y) throws Exception {
-        y = correctY(y);
-        x = correctX(x);
-
-        if (gridArray[y][x].getCollapse() == 0) {
-            throw new Exception(
-                "Already an item where trying to add. Failure in add method");
-        }
-        gridArray[y][x] = itemList.get(entry);
-        gridArray[y][x].setXY(x, y);
-        gridArray[y][x].setCollapse(0);
-        calculateSurroundings(x, y);
+        add(itemList.get(entry), (x - 1), gridArray.length - (y));
     }
 
 
@@ -378,8 +359,10 @@ public class Grid<T> {
         ArrayList<Item<T>> randList = findLowest();
         toAdd = randList.get(rand.nextInt(randList.size()));
         try {
+
             add(toAdd.getAcceptableNeighbors().get(rand.nextInt(toAdd
                 .getAcceptableNeighbors().size())), toAdd.getX(), toAdd.getY());
+            
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -388,9 +371,12 @@ public class Grid<T> {
         if (findLowest().get(0).getCollapse() == 1) {
             for (Item<T> it : findLowest()) {
                 try {
-                    add(it.getAcceptableNeighbors().get(rand.nextInt(it
-                        .getAcceptableNeighbors().size())), it.getX(), it
-                            .getY());
+                    if (it.getAcceptableNeighbors().size() < 0) {
+                        System.out.println(it.getAcceptableNeighborsWeighted());
+                        System.exit(0);
+                    }
+                    add(it.getAcceptableNeighbors().get(rand.nextInt(it.getAcceptableNeighbors().size())), it.getX(), it.getY());
+                    
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -441,6 +427,9 @@ public class Grid<T> {
         }
 
         acceptableNeighbors.retainAll(toAdd.acceptableNeighbors);
+        
+        
+        
         try {
 
             add(acceptableNeighbors.get(rand.nextInt(acceptableNeighbors
@@ -453,9 +442,12 @@ public class Grid<T> {
         if (findLowest().get(0).getCollapse() == 1) {
             for (Item<T> it : findLowest()) {
                 try {
-                    add(it.getAcceptableNeighborsWeighted().get(rand.nextInt(it
-                        .getAcceptableNeighborsWeighted().size())), it.getX(),
-                        it.getY());
+                    if (it.getData() == null) {
+                        add(new Item<T>(null, it.getX(), it.getY(), itemList.size(), itemList), it.getX(), it.getY());
+                        break;
+                    }
+                    add(it.getAcceptableNeighbors().get(rand.nextInt(it.getAcceptableNeighbors().size())), it.getX(), it.getY());
+                    
                 }
                 catch (Exception e) {
                     e.printStackTrace();

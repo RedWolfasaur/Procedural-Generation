@@ -53,8 +53,8 @@ public class Runner {
 
         // Grid<String> grid = new Grid<String>(3, 3, list);
 
-        Grid<Color> grid = new Grid<Color>(100, 100, list);
-        GUI<Item<Color>> window = new GUI<Item<Color>>(list, 15, 15);
+        //Grid<Color> grid = new Grid<Color>(100, 100, list);
+        GUI<Item<Color>> window = new GUI<Item<Color>>(list, 100, 100);
 
     }
 

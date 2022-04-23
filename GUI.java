@@ -185,7 +185,6 @@ public class GUI<T> {
             e.printStackTrace();
         }
         writeItem(grid.getGrid());
-        System.out.println(grid);
         frame.setVisible(true);
     }
 
@@ -231,9 +230,7 @@ public class GUI<T> {
                 gridX = gridX - 5;
                 gridY = gridY - 5;
             }
-            System.out.println(grid);
             grid = new Grid<Color>(gridX,gridY,grid);
-            System.out.println(grid);
             frame.setVisible(false);
             panel.removeAll();
             createComponents();

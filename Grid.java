@@ -84,7 +84,7 @@ public class Grid<T> {
 	t.addAll(itemList.subList(0, itemList.size() - 1));
 	for (int u = 0; u < gridArray.length; u++) {
 	    for (int c = 0; c < gridArray[u].length; c++) {
-		gridArray[u][c] = new Item<>(null, c, u, itemList.size(), t);
+		gridArray[u][c] = new Item<T>(null, c, u, itemList.size(), t);
 	    }
 	}
     }
@@ -172,7 +172,7 @@ public class Grid<T> {
     }
 
     /**
-     * overload
+     * 
      * 
      * @param x
      * @param y
@@ -235,18 +235,19 @@ public class Grid<T> {
 
 	int size = acceptableNeighbors.size();
 	for (int i = 0; i < size; i++) {
-	    acceptableNeighbors.addAll(acceptableNeighbors.get(i).getAcceptableNeighbors()); // change back to
-											     // weighted later
+	    acceptableNeighbors.addAll(acceptableNeighbors.get(i).getAcceptableNeighbors());
 	}
 
 	ArrayList<Item<T>> newList = new ArrayList<Item<T>>();
 	newList.addAll(itemList.subList(0, itemList.size() - 1));
 	newList.retainAll(acceptableNeighbors);
 
-	if (((gridArray[y][x].getCollapse() != itemList.size() - 1 && gridArray[y][x].getCollapse() != 0))
-		|| requiredValues.size() == 1) {
-	    gridArray[y][x].setAcceptableNeighbors(requiredValues);
-	}
+//	if (((gridArray[y][x].getCollapse() != itemList.size() - 1 && gridArray[y][x].getCollapse() != 0))
+//		|| requiredValues.size() == 1) {
+//	    gridArray[y][x].setAcceptableNeighbors(requiredValues);
+//	}
+	gridArray[y][x].setAcceptableNeighbors(requiredValues); // if the program starts bugging, uncomment above and
+								// remove this
 
 	if (gridArray[y][x].getCollapse() == 0) {
 	    if (!(requiredValues.containsAll(gridArray[y][x].getAcceptableNeighbors()))) {
@@ -273,8 +274,6 @@ public class Grid<T> {
     }
 
     /**
-     * This is pain. I would change it to match the one below, but that would be
-     * more pain
      */
     public void add(int entry, int x, int y) throws ItemExistsException {
 	add(itemList.get(entry), (x), y);
@@ -333,25 +332,21 @@ public class Grid<T> {
 	    }
 	}
 	try {
-	    if(toAdd.getAcceptableNeighbors().size() < 1) {
+	    if (toAdd.getAcceptableNeighbors().size() < 1) {
 		try {
-			System.out.println(toAdd.getAcceptableNeighbors().size());
-			add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
-		    } catch (Exception e1) {
-			e1.printStackTrace();
-		    }
+		    add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+		} catch (Exception e1) {
+		    e1.printStackTrace();
+		}
 	    }
 	    add(toAdd.getAcceptableNeighbors().get(rand.nextInt(toAdd.getAcceptableNeighbors().size())), toAdd.getX(),
 		    toAdd.getY());
 
-	} 
-	catch (ItemExistsException e3) {
+	} catch (ItemExistsException e3) {
 	    toAdd.setCollapse(0);
 	    return;
-	}
-	catch (Exception e) {
+	} catch (Exception e) {
 	    try {
-		System.out.println(toAdd.getAcceptableNeighbors().size());
 		add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
 	    } catch (Exception e1) {
 		e1.printStackTrace();

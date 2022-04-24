@@ -12,10 +12,13 @@ public class Runner {
     public static void main(String[] args) throws FullGridException {
 
 	ArrayList<Item<Color>> list = new ArrayList<Item<Color>>();
-	Item<Color> grass = new Item<Color>(Color.GREEN);
-	Item<Color> forest = new Item<Color>(new Color(28, 77, 41));
+	//Item<Color> grass = new Item<Color>(Color.GREEN);
+	Item<Color> grass = new Item<Color>(Color.WHITE);
+	//Item<Color> forest = new Item<Color>(new Color(28, 77, 41));
+	Item<Color> forest = new Item<Color>(new Color(98, 166, 107));
 	Item<Color> sand = new Item<Color>(Color.ORANGE);
-	Item<Color> water = new Item<Color>(Color.BLUE);
+	Item<Color> ocean = new Item<Color>(Color.BLUE);
+	Item<Color> coast = new Item<Color>(new Color(39, 153, 219));
 	Item<Color> mountains = new Item<Color>(Color.LIGHT_GRAY);
 	Item<Color> error = new Item<Color>(new Color(255, 0, 195));
 
@@ -35,21 +38,30 @@ public class Runner {
 	forest.add(grass, 40);
 	forest.add(forest, 60);
 
-	sand.add(grass, 30);
-	sand.add(water, 20);
-	sand.add(sand, 50);
+	//sand.add(grass, 30);
+	//sand.add(water, 20);
+	//sand.add(sand, 50);
+	sand.add(grass, 50);
+	sand.add(coast, 5);
+	sand.add(sand, 40);
 
-	water.add(sand, 20);
-	water.add(water, 60);
+	coast.add(sand, 20);
+	coast.add(coast, 90);
+	coast.add(ocean, 30);
+	
+	ocean.add(coast, 30);
+	ocean.add(ocean, 80);
+	ocean.add(sand, 0);
 
 	mountains.add(grass, 20);
 	mountains.add(mountains, 30);
 
 	list.add(grass);
 	list.add(sand);
-	list.add(water);
+	list.add(coast);
 	list.add(forest);
 	list.add(mountains);
+	list.add(ocean);
 
 	for (Item item : list) {
 	    error.add(item);
@@ -62,8 +74,10 @@ public class Runner {
 
 //	 Grid<Color> grid = new Grid<Color>(100, 100, list);
 
-	// somegood seeds: 10
-	GUI<Item<Color>> window = new GUI<Item<Color>>(list, 100, 100);
+	// somegood seeds: 10, 
+	//200x200: 381516884956544432, -3793075882536655115
+	//150x150: 4279102694807672599
+	GUI<Item<Color>> window = new GUI<Item<Color>>(list, 150, 150);
 
 //	System.out.println(grid);
 //	grid.placeWeightedSquare();

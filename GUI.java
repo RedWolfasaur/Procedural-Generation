@@ -8,12 +8,12 @@ import java.util.Random;
 
 import javax.swing.*;
 
-
 /**
  * I'm not going to lie, this was pain. Probably could be a lot better, but if
  * it works, it works.
  * 
- * A class just to show an example of how Grid and Item can be implemented. If youre going to use my procgen, you can get rid of this class.F
+ * A class just to show an example of how Grid and Item can be implemented. If
+ * youre going to use my procgen, you can get rid of this class.F
  * 
  * 
  */
@@ -40,7 +40,7 @@ public class GUI<T> {
 
     JTextField seedInput;
     JSlider item;
-    
+
     Item<Color> worldGen;
 
     Random rand;
@@ -81,8 +81,13 @@ public class GUI<T> {
     }
 
     public void createComponents() {
-	JLabel seedLabel = new JLabel("Current Seed: " + grid.getSeed());
+
+	JTextPane seedLabel = new JTextPane();
+	seedLabel.setText("Current Seed: " + grid.getSeed());
 	seedLabel.setBounds(10, 0, 200, 30);
+	seedLabel.setEditable(false);
+	seedLabel.setBackground(null);
+	seedLabel.setBorder(null);
 	panel.add(seedLabel);
 
 	JButton b1 = new JButton("Seed Menu");
@@ -198,26 +203,21 @@ public class GUI<T> {
     }
 
     public void writeItem(Item<Color>[][] list) {
-	int widthBlock = usedWidth / list[0].length;
-	int heightBlock = usedHeight / list[0].length;
+	int widthBlock = (int) Math.round(((double)usedWidth / (double)list[0].length));
+	int heightBlock = usedHeight / list.length;
 	ItemPanel shape = new ItemPanel();
 
+	System.out.println(widthBlock);
+	System.out.println(list[0].length);
+	System.out.println(widthBlock * list[0].length);
 	for (int y = 0; y < list.length; y++) {
 	    for (int x = 0; x < list[y].length; x++) {
 		if (list[y][x].getCollapse() == 0) {
 		    shape = new ItemPanel();
-		    shape.setBounds((windowWidth - usedWidth) / 2 + (x * (widthBlock)), 100 + (y * (heightBlock)),
-			    widthBlock, heightBlock);
+		    shape.setBounds(20 + ((1 + x) * (widthBlock)), 100 + (y * (heightBlock)), widthBlock, heightBlock);
 		    shape.setBackground((Color) list[y][x].getData());
 		    panel.add(shape);
 		}
-// else {
-// shape = new ItemPanel();
-// shape.setBounds(x * (widthBlock + 5), windowHeight - (y
-// * (heightBlock + 5)) + 40, widthBlock, heightBlock);
-// shape.setBackground(Color.GREEN);
-// panel.add(shape);
-// }
 	    }
 	}
     }
@@ -226,7 +226,7 @@ public class GUI<T> {
 	if (item == null) {
 	    item = grid.getItems().get(0);
 	}
-	double itemsToPlace = (gridX * gridY) * (1.0 / 10.0);
+	double itemsToPlace = (gridX * gridY) * (1.0 / 12.0);
 	for (int i = 0; i < itemsToPlace; i++) {
 	    try {
 		grid.add(item, rand.nextInt(gridX), rand.nextInt(gridY));
@@ -269,10 +269,10 @@ public class GUI<T> {
 	}
 	item = new JSlider(0, grid.getItems().size() - 2, start);
 	item.setBounds(400, 0, 400, 25);
-	//item.setMajorTickSpacing(1);
-	//item.setPaintTicks(true);
+	// item.setMajorTickSpacing(1);
+	// item.setPaintTicks(true);
 	item.setBackground(Color.GRAY);
-	
+
 	Hashtable labelTable = new Hashtable();
 
 	labelTable.put(0, new JLabel("Grass"));
@@ -282,14 +282,14 @@ public class GUI<T> {
 	labelTable.put(4, new JLabel("Mountain"));
 	item.setLabelTable(labelTable);
 	item.setPaintLabels(true);
-	
+
 	panel.add(item);
 
 	JButton itemAccept = new JButton();
 	itemAccept.setBounds(800, 2, 25, 25);
 	itemAccept.setBackground(Color.LIGHT_GRAY);
 	itemAccept.addActionListener(new changeItem());
-	
+
 	panel.add(itemAccept);
 
 	frame.setVisible(true);
@@ -316,7 +316,7 @@ public class GUI<T> {
 	    worldGen = grid.getItems().get(item.getValue());
 	    createNewGrid(Integer.parseInt(seedInput.getText()));
 
-        }
+	}
 
     }
 
@@ -328,7 +328,6 @@ public class GUI<T> {
 	public void actionPerformed(ActionEvent e) {
 	    worldGen = grid.getItems().get(item.getValue());
 	    createNewGrid(Integer.parseInt(seedInput.getText()));
-	    
 
 	}
 

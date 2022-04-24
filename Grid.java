@@ -10,9 +10,9 @@ public class Grid<T> {
     // holds all possible items.
     // THGE LAST IS AN ERROR HOZLDER
     private ArrayList<Item<T>> itemList;
-    
+
     private long seed;
-    
+
     Random rand;
 
     /**
@@ -20,7 +20,7 @@ public class Grid<T> {
      */
     public Grid(int x, int y, ArrayList<Item<T>> items) {
 	rand = new Random();
-	
+
 	gridArray = new Item[y][x];
 	itemList = items;
 	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
@@ -32,7 +32,7 @@ public class Grid<T> {
 	    }
 	}
     }
-    
+
     public Grid(int x, int y, ArrayList<Item<T>> items, long seed) {
 	this(x, y, items);
 	this.seed = seed;
@@ -47,8 +47,9 @@ public class Grid<T> {
 	itemList = oldGrid.getItems();
 	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
 	t.addAll(itemList.subList(0, itemList.size() - 1));
-	
+
 	seed = oldGrid.getSeed();
+	rand = new Random(seed);
 
 	for (int u = 0; u < gridArray.length; u++) {
 	    for (int c = 0; c < gridArray[u].length; c++) {
@@ -73,7 +74,7 @@ public class Grid<T> {
     public long getSeed() {
 	return seed;
     }
-    
+
     public ArrayList<Item<T>> getItems() {
 	return itemList;
     }
@@ -242,18 +243,15 @@ public class Grid<T> {
 	newList.addAll(itemList.subList(0, itemList.size() - 1));
 	newList.retainAll(acceptableNeighbors);
 
-	
-	if (((gridArray[y][x].getCollapse() != itemList.size() - 1 && gridArray[y][x].getCollapse() != 0)) || requiredValues.size() == 1)  {
+	if (((gridArray[y][x].getCollapse() != itemList.size() - 1 && gridArray[y][x].getCollapse() != 0))
+		|| requiredValues.size() == 1) {
 	    gridArray[y][x].setAcceptableNeighbors(requiredValues);
 	}
-	
+
 	if (gridArray[y][x].getCollapse() == 0) {
 	    if (!(requiredValues.containsAll(gridArray[y][x].getAcceptableNeighbors()))) {
-		
-		
-		
 
-		calculateSurroundingsOfUncollapse(x, y, true); 
+		calculateSurroundingsOfUncollapse(x, y, true);
 
 	    }
 
@@ -305,7 +303,7 @@ public class Grid<T> {
 		}
 	    }
 	}
-	
+
 	if (lowest == Integer.MAX_VALUE) {
 	    throw new FullGridException("Grid is full.");
 	}
@@ -327,13 +325,33 @@ public class Grid<T> {
 	Item<T> toAdd = null;
 	ArrayList<Item<T>> randList = findLowest();
 	toAdd = randList.get(rand.nextInt(randList.size()));
+	if (toAdd.getAcceptableNeighbors().size() == 0 && toAdd.getCollapse() != 0) {
+	    try {
+		add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+	    } catch (ItemExistsException e) {
+		e.printStackTrace();
+	    }
+	}
 	try {
-
+	    if(toAdd.getAcceptableNeighbors().size() < 1) {
+		try {
+			System.out.println(toAdd.getAcceptableNeighbors().size());
+			add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+		    } catch (Exception e1) {
+			e1.printStackTrace();
+		    }
+	    }
 	    add(toAdd.getAcceptableNeighbors().get(rand.nextInt(toAdd.getAcceptableNeighbors().size())), toAdd.getX(),
 		    toAdd.getY());
 
-	} catch (Exception e) {
+	} 
+	catch (ItemExistsException e3) {
+	    toAdd.setCollapse(0);
+	    return;
+	}
+	catch (Exception e) {
 	    try {
+		System.out.println(toAdd.getAcceptableNeighbors().size());
 		add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
 	    } catch (Exception e1) {
 		e1.printStackTrace();
@@ -401,7 +419,7 @@ public class Grid<T> {
 		try {
 		    add(itemList.size() - 1, x, y);
 		} catch (Exception e2) {
-		    // e2.printStackTrace();
+		    e2.printStackTrace();
 		}
 	    }
 	}

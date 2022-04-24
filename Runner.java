@@ -11,13 +11,13 @@ public class Runner {
 
     public static void main(String[] args) throws FullGridException {
 
-        ArrayList<Item<Color>> list = new ArrayList<Item<Color>>();
-        Item<Color> grass = new Item<Color>(Color.GREEN);
-        Item<Color> forest = new Item<Color>(new Color(28, 77, 41));
-        Item<Color> sand = new Item<Color>(Color.ORANGE);
-        Item<Color> water = new Item<Color>(Color.BLUE);
-        Item<Color> mountains = new Item<Color>(Color.LIGHT_GRAY);
-        Item<Color> error = new Item<Color>(new Color(255, 0, 195));
+	ArrayList<Item<Color>> list = new ArrayList<Item<Color>>();
+	Item<Color> grass = new Item<Color>(Color.GREEN);
+	Item<Color> forest = new Item<Color>(new Color(28, 77, 41));
+	Item<Color> sand = new Item<Color>(Color.ORANGE);
+	Item<Color> water = new Item<Color>(Color.BLUE);
+	Item<Color> mountains = new Item<Color>(Color.LIGHT_GRAY);
+	Item<Color> error = new Item<Color>(new Color(255, 0, 195));
 
 //	ArrayList<Item<String>> list = new ArrayList<Item<String>>();
 //	Item<String> grass = new Item<String>("G");
@@ -40,7 +40,7 @@ public class Runner {
 	sand.add(sand, 50);
 
 	water.add(sand, 20);
-	water.add(water, 40);
+	water.add(water, 60);
 
 	mountains.add(grass, 20);
 	mountains.add(mountains, 30);
@@ -50,13 +50,20 @@ public class Runner {
 	list.add(water);
 	list.add(forest);
 	list.add(mountains);
+
+	for (Item item : list) {
+	    error.add(item);
+	}
+
+	
 	list.add(error);
 
 //	Grid<String> grid = new Grid<String>(5, 5, list);
 
 //	 Grid<Color> grid = new Grid<Color>(100, 100, list);
-	
-        GUI<Item<Color>> window = new GUI<Item<Color>>(list, 100, 100, 10);
+
+	// somegood seeds: 10
+	GUI<Item<Color>> window = new GUI<Item<Color>>(list, 100, 100);
 
 //	System.out.println(grid);
 //	grid.placeWeightedSquare();

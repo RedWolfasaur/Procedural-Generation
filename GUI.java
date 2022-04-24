@@ -7,14 +7,14 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 
 /**
  * I'm not going to lie, this was pain. Probably could be a lot better, but if
  * it works, it works.
  * 
  * A class just to show an example of how Grid and Item can be implemented. If youre going to use my procgen, you can get rid of this class.F
+ * 
  * 
  */
 public class GUI<T> {
@@ -263,7 +263,11 @@ public class GUI<T> {
 	seedAccept.addActionListener(new changeSeed());
 	panel.add(seedAccept);
 
-	item = new JSlider(0, grid.getItems().size() - 2, 0);
+	int start = 0;
+	if (item != null) {
+	    start = item.getValue();
+	}
+	item = new JSlider(0, grid.getItems().size() - 2, start);
 	item.setBounds(400, 0, 400, 25);
 	//item.setMajorTickSpacing(1);
 	//item.setPaintTicks(true);
@@ -310,6 +314,7 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    worldGen = grid.getItems().get(item.getValue());
+	    createNewGrid(Integer.parseInt(seedInput.getText()));
 
         }
 
@@ -321,7 +326,9 @@ public class GUI<T> {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+	    worldGen = grid.getItems().get(item.getValue());
 	    createNewGrid(Integer.parseInt(seedInput.getText()));
+	    
 
 	}
 

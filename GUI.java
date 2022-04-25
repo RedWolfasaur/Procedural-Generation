@@ -207,9 +207,6 @@ public class GUI<T> {
 	int heightBlock = usedHeight / list.length;
 	ItemPanel shape = new ItemPanel();
 
-	System.out.println(widthBlock);
-	System.out.println(list[0].length);
-	System.out.println(widthBlock * list[0].length);
 	for (int y = 0; y < list.length; y++) {
 	    for (int x = 0; x < list[y].length; x++) {
 		if (list[y][x].getCollapse() == 0) {
@@ -243,7 +240,7 @@ public class GUI<T> {
     public void placeItem() {
 	frame.setVisible(false);
 	try {
-	    grid.placeSquare();
+	    grid.placeWeightedSquare();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -314,7 +311,7 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    worldGen = grid.getItems().get(item.getValue());
-	    createNewGrid(Integer.parseInt(seedInput.getText()));
+	    createNewGrid(Long.parseLong(seedInput.getText()));
 
 	}
 
@@ -327,7 +324,7 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    worldGen = grid.getItems().get(item.getValue());
-	    createNewGrid(Integer.parseInt(seedInput.getText()));
+	    createNewGrid(Long.parseLong(seedInput.getText()));
 
 	}
 
@@ -394,6 +391,7 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    placeItem();
+	    System.out.println(grid);
 	}
 
     }
@@ -413,6 +411,7 @@ public class GUI<T> {
 	    frame.setVisible(false);
 	    writeItem(grid.getGrid());
 	    frame.setVisible(true);
+	    
 	}
 
     }
@@ -426,6 +425,7 @@ public class GUI<T> {
 		try {
 		    grid.placeWeightedSquare();
 		} catch (Exception r) {
+		    System.out.println("Here");
 		    break;
 		}
 	    }
@@ -444,6 +444,7 @@ public class GUI<T> {
 	public void actionPerformed(ActionEvent e) {
 
 	    placeItem();
+	    System.out.println(grid);
 
 	}
 

@@ -15,6 +15,8 @@ public class Grid<T> {
 
     Random rand;
 
+    Item<T> prevModified;
+
     /**
      * Makes a grid.
      */
@@ -151,19 +153,24 @@ public class Grid<T> {
 
 	if (dirCheck[0]) {
 	    acceptableNeighbors.retainAll(gridArray[y + 1][x].getAcceptableNeighbors());
+	    acceptableNeighbors.retainAll(gridArray[y + 1][x].acceptableNeighborsWeighted);
 	}
 	if (dirCheck[1]) {
 	    acceptableNeighbors.retainAll(gridArray[y][x + 1].getAcceptableNeighbors());
+	    acceptableNeighbors.retainAll(gridArray[y][x + 1].acceptableNeighborsWeighted);
 	}
 	if (dirCheck[2]) {
 	    acceptableNeighbors.retainAll(gridArray[y - 1][x].getAcceptableNeighbors());
+	    acceptableNeighbors.retainAll(gridArray[y - 1][x].acceptableNeighborsWeighted);
 	}
 	if (dirCheck[3]) {
 	    acceptableNeighbors.retainAll(gridArray[y][x - 1].getAcceptableNeighbors());
+	    acceptableNeighbors.retainAll(gridArray[y][x - 1].acceptableNeighborsWeighted);
 	}
 
 	if (gridArray[y][x].getAcceptableNeighbors().size() > acceptableNeighbors.size()
 		&& !(acceptableNeighbors.containsAll(gridArray[y][x].getAcceptableNeighbors()))) {
+
 	    gridArray[y][x].setAcceptableNeighbors(acceptableNeighbors);
 
 	    calculateSurroundingsOfUncollapse(x, y, true);
@@ -206,28 +213,28 @@ public class Grid<T> {
 
 	if (dirCheck[0]) {
 	    if (gridArray[y + 1][x].getCollapse() == 0) {
-		requiredValues.retainAll(gridArray[y + 1][x].getAcceptableNeighbors());
+		requiredValues.retainAll(gridArray[y + 1][x].getAcceptableNeighborsWeighted());
 	    } else {
 		acceptableNeighbors.addAll(gridArray[y + 1][x].getAcceptableNeighbors());
 	    }
 	}
 	if (dirCheck[1]) {
 	    if (gridArray[y][x + 1].getCollapse() == 0) {
-		requiredValues.retainAll(gridArray[y][x + 1].getAcceptableNeighbors());
+		requiredValues.retainAll(gridArray[y][x + 1].getAcceptableNeighborsWeighted());
 	    } else {
 		acceptableNeighbors.addAll(gridArray[y][x + 1].getAcceptableNeighbors());
 	    }
 	}
 	if (dirCheck[2]) {
 	    if (gridArray[y - 1][x].getCollapse() == 0) {
-		requiredValues.retainAll(gridArray[y - 1][x].getAcceptableNeighbors());
+		requiredValues.retainAll(gridArray[y - 1][x].getAcceptableNeighborsWeighted());
 	    } else {
 		acceptableNeighbors.addAll(gridArray[y - 1][x].getAcceptableNeighbors());
 	    }
 	}
 	if (dirCheck[3]) {
 	    if (gridArray[y][x - 1].getCollapse() == 0) {
-		requiredValues.retainAll(gridArray[y][x - 1].getAcceptableNeighbors());
+		requiredValues.retainAll(gridArray[y][x - 1].getAcceptableNeighborsWeighted());
 	    } else {
 		acceptableNeighbors.addAll(gridArray[y][x - 1].getAcceptableNeighbors());
 	    }
@@ -235,7 +242,7 @@ public class Grid<T> {
 
 	int size = acceptableNeighbors.size();
 	for (int i = 0; i < size; i++) {
-	    acceptableNeighbors.addAll(acceptableNeighbors.get(i).getAcceptableNeighbors());
+	    acceptableNeighbors.addAll(acceptableNeighbors.get(i).getAcceptableNeighborsWeighted());
 	}
 
 	ArrayList<Item<T>> newList = new ArrayList<Item<T>>();
@@ -246,6 +253,7 @@ public class Grid<T> {
 //		|| requiredValues.size() == 1) {
 //	    gridArray[y][x].setAcceptableNeighbors(requiredValues);
 //	}
+
 	gridArray[y][x].setAcceptableNeighbors(requiredValues); // if the program starts bugging, uncomment above and
 								// remove this
 
@@ -281,13 +289,13 @@ public class Grid<T> {
 
     public void add(Item<T> item, int x, int y) throws ItemExistsException {
 	if (gridArray[y][x].getCollapse() == 0) {
-	    System.out.println("BREAK BREAK BREAK");
 	    throw new ItemExistsException("Already an item where trying to add. Failure in add method");
 	}
 	gridArray[y][x] = item;
 	gridArray[y][x].setXY(x, y);
 	gridArray[y][x].setCollapse(0);
 	calculateSurroundings(x, y);
+	prevModified = item;
     }
 
     public ArrayList<Item<T>> findLowest() throws FullGridException {
@@ -319,6 +327,42 @@ public class Grid<T> {
 	return lowList;
     }
 
+    public void remove(int x, int y) {
+	System.out.println(x + " " + y);
+	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
+	t.addAll(itemList.subList(0, itemList.size() - 1));
+	boolean[] dirCheck = testDirection(x, y);
+	if (dirCheck[0]) {
+	    	gridArray[y + 1][x] = new Item<T>(null, x, y + 1, itemList.size() - 1, t);
+	    	calculateSurroundings(x, y-1);
+
+	    }
+	    if (dirCheck[1]) {
+		gridArray[y][x + 1] = new Item<T>(null, x + 1, y, itemList.size() - 1, t);
+		calculateSurroundings(x+1, y);
+
+	    }
+	    if (dirCheck[2]) {
+		gridArray[y - 1][x] = new Item<T>(null, x, y - 1, itemList.size() - 1, t);
+		calculateSurroundings(x, y-1);
+
+	    }
+	    if (dirCheck[3]) {
+		gridArray[y][x - 1] = new Item<T>(null, x - 1, y, itemList.size() - 1, t);
+	    }
+	
+	
+	// gridArray[y][x] = new Item<T>(itemList.get(6).getData(), x - 1, y);
+    }
+
+    public void error(Item<T> toAdd) throws ItemExistsException {
+
+	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
+	t.addAll(itemList.subList(0, itemList.size() - 1));
+	remove(toAdd.getX(), toAdd.getY());
+	// add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+    }
+
     public void placeSquare() throws FullGridException {
 	// for a random start
 	Item<T> toAdd = null;
@@ -326,17 +370,22 @@ public class Grid<T> {
 	toAdd = randList.get(rand.nextInt(randList.size()));
 	if (toAdd.getAcceptableNeighbors().size() == 0 && toAdd.getCollapse() != 0) {
 	    try {
-		add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+		error(toAdd);
+		// throw new FullGridException("356");
 	    } catch (ItemExistsException e) {
 		e.printStackTrace();
+		// throw new FullGridException("359");
 	    }
 	}
 	try {
 	    if (toAdd.getAcceptableNeighbors().size() < 1) {
 		try {
-		    add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+		    error(toAdd);
+		    // throw new FullGridException("366");
+
 		} catch (Exception e1) {
 		    e1.printStackTrace();
+		    // throw new FullGridException("369");
 		}
 	    }
 	    add(toAdd.getAcceptableNeighbors().get(rand.nextInt(toAdd.getAcceptableNeighbors().size())), toAdd.getX(),
@@ -347,11 +396,13 @@ public class Grid<T> {
 	    return;
 	} catch (Exception e) {
 	    try {
-		add(itemList.size() - 1, toAdd.getX(), toAdd.getY());
+		error(toAdd);
+		// throw new FullGridException("381");
 	    } catch (Exception e1) {
 		e1.printStackTrace();
+		// throw new FullGridException("384");
 	    }
-	    e.printStackTrace();
+	    // e.printStackTrace();
 	}
 
 	if (findLowest().get(0).getCollapse() == 1) {
@@ -362,11 +413,12 @@ public class Grid<T> {
 
 		} catch (Exception e) {
 		    try {
-			add(itemList.size() - 1, it.getX(), it.getY());
+			error(it);
 		    } catch (ItemExistsException e3) {
 			return;
 		    } catch (Exception e2) {
 			e2.printStackTrace();
+			// throw new FullGridException("AA");
 		    }
 
 		}
@@ -412,9 +464,11 @@ public class Grid<T> {
 		placeSquare();
 	    } catch (Exception e1) {
 		try {
-		    add(itemList.size() - 1, x, y);
+		    e1.printStackTrace();
+		    // throw new FullGridException("451");
 		} catch (Exception e2) {
 		    e2.printStackTrace();
+		    // throw new FullGridException("AA");
 		}
 	    }
 	}
@@ -447,7 +501,8 @@ public class Grid<T> {
 
 		} catch (Exception e) {
 		    try {
-			add(itemList.size() - 1, x, y);
+			error(it);
+			// throw new FullGridException("AA");
 		    } catch (Exception e2) {
 			e2.printStackTrace();
 		    }

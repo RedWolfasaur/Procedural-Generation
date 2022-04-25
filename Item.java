@@ -38,6 +38,12 @@ public class Item<T> {
         acceptableNeighborsWeighted = new ArrayList<Item<T>>();
     }
     
+    public void clear() {
+	data = null;
+	acceptableNeighbors = new ArrayList<Item<T>>();
+        acceptableNeighborsWeighted = new ArrayList<Item<T>>();
+    }
+    
     public T getData() {
         return data;
     }

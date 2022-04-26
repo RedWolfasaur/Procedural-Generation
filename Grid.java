@@ -377,7 +377,6 @@ public class Grid<T> {
 	    gridArray[y][x - 1] = new Item<T>(null, x - 1, y, itemList.size() - 1, t);
 	}
 
-	// gridArray[y][x] = new Item<T>(itemList.get(6).getData(), x - 1, y);
     }
 
     public void error(Item<T> toAdd) throws ItemExistsException {

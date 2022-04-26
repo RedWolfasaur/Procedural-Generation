@@ -76,6 +76,22 @@ public class GUI<T> {
 	writeItem(grid.getGrid());
 	frame.setVisible(true);
     }
+    
+    public GUI(Grid<Color> grid) {
+	long seed = grid.getSeed();
+	rand = new Random(seed);
+	gridX = grid.getX();
+	gridY = grid.getY();
+	run = false;
+
+	this.grid = grid;
+	createFrame();
+	panel.setVisible(false);
+	writeItem(grid.getGrid());
+	writeItem(grid.getGrid());
+	panel.setVisible(true);
+
+    }
 
     public boolean getRun() {
 	return run;
@@ -298,7 +314,7 @@ public class GUI<T> {
 
 	panel.add(itemAccept);
 
-	frame.setVisible(true);
+	panel.setVisible(true);
     }
 
     private class NavigationListener implements KeyListener {

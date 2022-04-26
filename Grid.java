@@ -1,6 +1,7 @@
 package proceduralGeneration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Grid<T> {
@@ -45,6 +46,14 @@ public class Grid<T> {
      * Creates a brand new grid from a pre existing grid. It works.
      */
     public Grid(int x, int y, Grid oldGrid) {
+	this(x, y, oldGrid, 0);
+    }
+
+    /**
+     * 0-3, 0 correspond to up right, 1 corrspond right, down
+     * (as in the map will add new space up/downs)
+     */
+    public Grid(int x, int y, Grid oldGrid, int dir) {
 	gridArray = new Item[y][x];
 	itemList = oldGrid.getItems();
 	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
@@ -53,24 +62,55 @@ public class Grid<T> {
 	seed = oldGrid.getSeed();
 	rand = new Random(seed);
 
-	for (int u = 0; u < gridArray.length; u++) {
-	    for (int c = 0; c < gridArray[u].length; c++) {
-		try {
-		    gridArray[u][c] = oldGrid.getGrid()[u - (x - oldGrid.getY())][c];
-		    oldGrid.getGrid()[u - (x - oldGrid.getY())][c].setXY(c, u);
-		} catch (Exception e) {
-		    // e.printStackTrace();
-		    gridArray[u][c] = new Item<>(null, c, u, itemList.size() - 1, t);
+	// this is what i want
+	switch (dir) {
+	case 0:
+	    for (int u = 0; u < gridArray.length; u++) {
+		for (int c = 0; c < gridArray[u].length; c++) {
+		    try {
+			gridArray[u][c] = oldGrid.getGrid()[u - (y - oldGrid.getY())][c];
+			oldGrid.getGrid()[u - (y - oldGrid.getY())][c].setXY(c, u);
+		    } catch (Exception e) {
+			
+			gridArray[u][c] = new Item<>(null, c, u, itemList.size() - 1, t);
+			
+		    }
+		}
+		
+	    }
+	    break;
+	case 1:
+	    for (int u = 0; u < gridArray.length; u++) {
+		for (int c = 0; c < gridArray[u].length; c++) {
+		    try {
+			gridArray[u][c] = oldGrid.getGrid()[u][c - (x - oldGrid.getX())];
+			oldGrid.getGrid()[u][c - (x - oldGrid.getX())].setXY(c, u);
+		    } catch (Exception e) {
+			// e.printStackTrace();
+			gridArray[u][c] = new Item<>(null, c, u, itemList.size(), t);
+			
+		    }
 		}
 	    }
+	    break;
 	}
+	// checks the number stuff
+	
 	for (int u = 0; u < gridArray.length; u++) {
 	    for (int c = 0; c < gridArray[u].length; c++) {
+		
 		if (gridArray[u][c].getCollapse() == 0) {
 		    calculateSurroundings(c, u);
 		}
+		if (c == oldGrid.getGrid()[0].length) {
+		    break;
+		}
+	    }
+	    if (u == oldGrid.getGrid().length) {
+		break;
 	    }
 	}
+
     }
 
     public long getSeed() {
@@ -245,25 +285,11 @@ public class Grid<T> {
 	    acceptableNeighbors.addAll(acceptableNeighbors.get(i).getAcceptableNeighborsWeighted());
 	}
 
-	ArrayList<Item<T>> newList = new ArrayList<Item<T>>();
-	newList.addAll(itemList.subList(0, itemList.size() - 1));
-	newList.retainAll(acceptableNeighbors);
+	gridArray[y][x].setAcceptableNeighbors(requiredValues);
 
-//	if (((gridArray[y][x].getCollapse() != itemList.size() - 1 && gridArray[y][x].getCollapse() != 0))
-//		|| requiredValues.size() == 1) {
-//	    gridArray[y][x].setAcceptableNeighbors(requiredValues);
-//	}
-
-	gridArray[y][x].setAcceptableNeighbors(requiredValues); // if the program starts bugging, uncomment above and
-								// remove this
-
-	if (gridArray[y][x].getCollapse() == 0) {
-	    if (!(requiredValues.containsAll(gridArray[y][x].getAcceptableNeighbors()))) {
-
-		calculateSurroundingsOfUncollapse(x, y, true);
-
-	    }
-
+	if (gridArray[y][x].getCollapse() == 0
+		&& !(requiredValues.containsAll(gridArray[y][x].getAcceptableNeighbors()))) {
+	    calculateSurroundingsOfUncollapse(x, y, true);
 	}
 
     }
@@ -274,7 +300,7 @@ public class Grid<T> {
     public boolean[] testDirection(int x, int y) {
 	boolean[] list = new boolean[4];
 	list[0] = (y + 1 < gridArray.length);
-	list[1] = (x + 1 < gridArray[y].length);
+	list[1] = (x + 1 < gridArray[0].length);
 	list[2] = (y - 1 >= 0);
 	list[3] = (x - 1 >= 0);
 	return list;
@@ -284,18 +310,19 @@ public class Grid<T> {
     /**
      */
     public void add(int entry, int x, int y) throws ItemExistsException {
-	add(itemList.get(entry), (x), y);
+	add(itemList.get(entry), x, y);
     }
 
     public void add(Item<T> item, int x, int y) throws ItemExistsException {
 	if (gridArray[y][x].getCollapse() == 0) {
 	    throw new ItemExistsException("Already an item where trying to add. Failure in add method");
 	}
-	gridArray[y][x] = item;
+	gridArray[y][x] = new Item<T>(item);
+
 	gridArray[y][x].setXY(x, y);
 	gridArray[y][x].setCollapse(0);
 	calculateSurroundings(x, y);
-	prevModified = item;
+	prevModified = gridArray[y][x];
     }
 
     public ArrayList<Item<T>> findLowest() throws FullGridException {
@@ -328,30 +355,28 @@ public class Grid<T> {
     }
 
     public void remove(int x, int y) {
-	System.out.println(x + " " + y);
 	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
 	t.addAll(itemList.subList(0, itemList.size() - 1));
 	boolean[] dirCheck = testDirection(x, y);
 	if (dirCheck[0]) {
-	    	gridArray[y + 1][x] = new Item<T>(null, x, y + 1, itemList.size() - 1, t);
-	    	calculateSurroundings(x, y-1);
+	    gridArray[y + 1][x] = new Item<T>(null, x, y + 1, itemList.size() - 1, t);
+	    calculateSurroundings(x, y - 1);
 
-	    }
-	    if (dirCheck[1]) {
-		gridArray[y][x + 1] = new Item<T>(null, x + 1, y, itemList.size() - 1, t);
-		calculateSurroundings(x+1, y);
+	}
+	if (dirCheck[1]) {
+	    gridArray[y][x + 1] = new Item<T>(null, x + 1, y, itemList.size() - 1, t);
+	    calculateSurroundings(x + 1, y);
 
-	    }
-	    if (dirCheck[2]) {
-		gridArray[y - 1][x] = new Item<T>(null, x, y - 1, itemList.size() - 1, t);
-		calculateSurroundings(x, y-1);
+	}
+	if (dirCheck[2]) {
+	    gridArray[y - 1][x] = new Item<T>(null, x, y - 1, itemList.size() - 1, t);
+	    calculateSurroundings(x, y - 1);
 
-	    }
-	    if (dirCheck[3]) {
-		gridArray[y][x - 1] = new Item<T>(null, x - 1, y, itemList.size() - 1, t);
-	    }
-	
-	
+	}
+	if (dirCheck[3]) {
+	    gridArray[y][x - 1] = new Item<T>(null, x - 1, y, itemList.size() - 1, t);
+	}
+
 	// gridArray[y][x] = new Item<T>(itemList.get(6).getData(), x - 1, y);
     }
 
@@ -368,6 +393,9 @@ public class Grid<T> {
 	Item<T> toAdd = null;
 	ArrayList<Item<T>> randList = findLowest();
 	toAdd = randList.get(rand.nextInt(randList.size()));
+	int x = toAdd.getX();
+	int y = toAdd.getY();
+
 	if (toAdd.getAcceptableNeighbors().size() == 0 && toAdd.getCollapse() != 0) {
 	    try {
 		error(toAdd);
@@ -424,6 +452,7 @@ public class Grid<T> {
 		}
 
 	    }
+
 	}
 
     }
@@ -436,7 +465,6 @@ public class Grid<T> {
 	// toAdd = randList.get(0);
 	int x = toAdd.getX();
 	int y = toAdd.getY();
-
 	ArrayList<Item<T>> acceptableNeighbors = new ArrayList<Item<T>>();
 
 	boolean[] dirCheck = testDirection(x, y);
@@ -496,8 +524,7 @@ public class Grid<T> {
 
 			break;
 		    }
-		    add(it.getAcceptableNeighbors().get(rand.nextInt(it.getAcceptableNeighbors().size())), it.getX(),
-			    it.getY());
+		    add(it.getAcceptableNeighbors().get(rand.nextInt(it.getAcceptableNeighbors().size())), x, y);
 
 		} catch (Exception e) {
 		    try {
@@ -513,4 +540,41 @@ public class Grid<T> {
 
     }
 
+    public Iterator<Item<T>> gridIterator() {
+	return new GridIterator();
+    }
+
+    private class GridIterator implements Iterator<Item<T>> {
+	int currentX;
+	int currentY;
+
+	int maxX;
+	int maxY;
+
+	public GridIterator() {
+	    currentX = -1;
+	    currentY = 0;
+	    maxX = gridArray[0].length;
+	    maxY = gridArray.length;
+	}
+
+	public boolean hasNext() {
+	    if (currentX + 1 == maxX && currentY + 1 == maxY) {
+		return false;
+	    }
+	    return true;
+	}
+
+	@Override
+	public Item<T> next() {
+	    currentX++;
+	    if (currentX == maxX) {
+		currentX = 0;
+		currentY++;
+	    }
+
+	    return gridArray[currentY][currentX];
+	}
+
+    }
 }

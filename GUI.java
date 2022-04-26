@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.swing.*;
@@ -183,6 +184,9 @@ public class GUI<T> {
 
 	panel.setBounds(0, 0, windowWidth, windowHeight);
 	panel.setBackground(Color.GRAY);
+	panel.setFocusable(true);
+	panel.addKeyListener(new NavigationListener());
+
 	createComponents();
 
     }
@@ -203,18 +207,23 @@ public class GUI<T> {
     }
 
     public void writeItem(Item<Color>[][] list) {
-	int widthBlock = (int) Math.round(((double)usedWidth / (double)list[0].length));
-	int heightBlock = usedHeight / list.length;
+	int widthBlock = (int) Math.round(((double) usedWidth / (double) list[0].length));
+	int heightBlock = (int) Math.round(((double) usedHeight / (double) list.length));
 	ItemPanel shape = new ItemPanel();
+	Item<Color> item;
 
-	for (int y = 0; y < list.length; y++) {
-	    for (int x = 0; x < list[y].length; x++) {
-		if (list[y][x].getCollapse() == 0) {
-		    shape = new ItemPanel();
-		    shape.setBounds(20 + ((1 + x) * (widthBlock)), 100 + (y * (heightBlock)), widthBlock, heightBlock);
-		    shape.setBackground((Color) list[y][x].getData());
-		    panel.add(shape);
-		}
+	panel.removeAll();
+	createComponents();
+
+	Iterator<Item<Color>> iter = grid.gridIterator();
+	while (iter.hasNext()) {
+	    item = iter.next();
+	    if (item.getCollapse() == 0) {
+		shape = new ItemPanel();
+		shape.setBounds(20 + ((1 + item.getX()) * (widthBlock)), 100 + (item.getY() * (heightBlock)),
+			widthBlock, heightBlock);
+		shape.setBackground(item.getData());
+		panel.add(shape);
 	    }
 	}
     }
@@ -292,6 +301,60 @@ public class GUI<T> {
 	frame.setVisible(true);
     }
 
+    private class NavigationListener implements KeyListener {
+	private boolean moving = false;
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	    int loc = e.getKeyCode();
+	    if ((loc == KeyEvent.VK_KP_LEFT || loc == KeyEvent.VK_LEFT)) {
+		gridX += 5;
+		grid = new Grid<Color>(gridX, gridY, grid, 1);
+	    }
+	    if ((loc == KeyEvent.VK_KP_UP || loc == KeyEvent.VK_UP)) {
+		gridY += 5;
+		grid = new Grid<Color>(gridX, gridY, grid, 0);
+	    }
+	    if ((loc == KeyEvent.VK_KP_RIGHT || loc == KeyEvent.VK_RIGHT)) {
+		gridX += 5;
+		grid = new Grid<Color>(gridX, gridY, grid, 1);
+	    }
+	    if ((loc == KeyEvent.VK_KP_DOWN || loc == KeyEvent.VK_DOWN)) {
+		gridY += 5;
+		grid = new Grid<Color>(gridX, gridY, grid, 0);
+	    }
+
+	    while (true) {
+		try {
+		    grid.placeWeightedSquare();
+		    
+		} catch (Exception r) {
+		    break;
+		}
+	    }
+
+	    
+	    frame.setVisible(false);
+	    panel.removeAll();
+	    createComponents();
+	    writeItem(grid.getGrid());
+	    moving = false;
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	    // System.out.println(e.getKeyChar());
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	    // System.out.println(e.getKeyChar());
+
+	}
+    }
+
     private class GUIEvent implements ActionListener {
 	public GUIEvent() {
 
@@ -351,6 +414,7 @@ public class GUI<T> {
 		gridX = gridX - 5;
 		gridY = gridY - 5;
 	    }
+	    
 	    grid = new Grid<Color>(gridX, gridY, grid);
 	    frame.setVisible(false);
 	    panel.removeAll();
@@ -391,7 +455,6 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    placeItem();
-	    System.out.println(grid);
 	}
 
     }
@@ -411,7 +474,7 @@ public class GUI<T> {
 	    frame.setVisible(false);
 	    writeItem(grid.getGrid());
 	    frame.setVisible(true);
-	    
+
 	}
 
     }
@@ -421,17 +484,21 @@ public class GUI<T> {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+	    long startTime = System.currentTimeMillis();
 	    while (true) {
 		try {
 		    grid.placeWeightedSquare();
 		} catch (Exception r) {
-		    System.out.println("Here");
 		    break;
 		}
 	    }
+
 	    frame.setVisible(false);
 	    writeItem(grid.getGrid());
 	    frame.setVisible(true);
+	    long endTime = System.currentTimeMillis();
+	    System.out.println(endTime - startTime);
+
 	}
 
     }
@@ -444,7 +511,6 @@ public class GUI<T> {
 	public void actionPerformed(ActionEvent e) {
 
 	    placeItem();
-	    System.out.println(grid);
 
 	}
 

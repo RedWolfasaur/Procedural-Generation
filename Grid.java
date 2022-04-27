@@ -23,6 +23,8 @@ public class Grid<T> {
      */
     public Grid(int x, int y, ArrayList<Item<T>> items) {
 	rand = new Random();
+	seed = rand.nextLong();
+	rand = new Random(seed);
 
 	gridArray = new Item[y][x];
 	itemList = items;

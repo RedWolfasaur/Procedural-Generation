@@ -76,7 +76,7 @@ public class GUI<T> {
 	writeItem(grid.getGrid());
 	frame.setVisible(true);
     }
-    
+
     public GUI(Grid<Color> grid) {
 	long seed = grid.getSeed();
 	rand = new Random(seed);
@@ -87,7 +87,7 @@ public class GUI<T> {
 	this.grid = grid;
 	createFrame();
 	panel.setVisible(false);
-	writeItem(grid.getGrid());
+	// writeItem(grid.getGrid());
 	writeItem(grid.getGrid());
 	panel.setVisible(true);
 
@@ -98,7 +98,6 @@ public class GUI<T> {
     }
 
     public void createComponents() {
-
 	JTextPane seedLabel = new JTextPane();
 	seedLabel.setText("Current Seed: " + grid.getSeed());
 	seedLabel.setBounds(10, 0, 200, 30);
@@ -333,23 +332,22 @@ public class GUI<T> {
 	    }
 	    if ((loc == KeyEvent.VK_KP_RIGHT || loc == KeyEvent.VK_RIGHT)) {
 		gridX += 5;
-		grid = new Grid<Color>(gridX, gridY, grid, 1);
+		grid = new Grid<Color>(gridX, gridY, grid, 0);
 	    }
 	    if ((loc == KeyEvent.VK_KP_DOWN || loc == KeyEvent.VK_DOWN)) {
 		gridY += 5;
-		grid = new Grid<Color>(gridX, gridY, grid, 0);
+		grid = new Grid<Color>(gridX, gridY, grid, 1);
 	    }
 
 	    while (true) {
 		try {
 		    grid.placeWeightedSquare();
-		    
+
 		} catch (Exception r) {
 		    break;
 		}
 	    }
 
-	    
 	    frame.setVisible(false);
 	    panel.removeAll();
 	    createComponents();
@@ -430,7 +428,7 @@ public class GUI<T> {
 		gridX = gridX - 5;
 		gridY = gridY - 5;
 	    }
-	    
+
 	    grid = new Grid<Color>(gridX, gridY, grid);
 	    frame.setVisible(false);
 	    panel.removeAll();
@@ -501,11 +499,26 @@ public class GUI<T> {
 
 	public void actionPerformed(ActionEvent e) {
 	    long startTime = System.currentTimeMillis();
-	    while (true) {
+	    
+	    int currentWidth = 50;
+	    int currentHeight = 50;
+	    
+	    int width = grid.getX();
+	    int height = grid.getY();
+	    
+	    grid = new Grid<Color>(50, 50, grid);
+
+	    System.out.println("Starting");
+	    while (currentWidth != width && currentHeight != height) {
+		currentWidth += 50;
+		currentHeight += 50;
+		grid = new Grid<Color>(currentWidth, currentHeight, grid);
 		try {
-		    grid.placeWeightedSquare();
-		} catch (Exception r) {
-		    break;
+		    while (true) {
+			grid.placeWeightedSquare();
+		    }
+		} catch (Exception e2) {
+		    // e2.printStackTrace();
 		}
 	    }
 

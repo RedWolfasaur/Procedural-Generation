@@ -13,17 +13,17 @@ public class Runner {
     public static void main(String[] args) {
 
 	ArrayList<Item<Color>> list = new ArrayList<Item<Color>>();
-	//Item<Color> grass = new Item<Color>(Color.GREEN);
-	//Item<Color> grass = new Item<Color>(Color.WHITE);
+	// Item<Color> grass = new Item<Color>(Color.GREEN);
+	// Item<Color> grass = new Item<Color>(Color.WHITE);
 	Item<Color> grass = new Item<Color>(new Color(98, 166, 107));
 	Item<Color> forest = new Item<Color>(new Color(28, 77, 41));
-	//Item<Color> forest = new Item<Color>(new Color(98, 166, 107));
+	// Item<Color> forest = new Item<Color>(new Color(98, 166, 107));
 	Item<Color> sand = new Item<Color>(Color.ORANGE);
 	Item<Color> ocean = new Item<Color>(Color.BLUE);
 	Item<Color> coast = new Item<Color>(new Color(39, 153, 219));
 	Item<Color> mountains = new Item<Color>(Color.LIGHT_GRAY);
-	Item<Color> error = new Item<Color>(new Color(255, 0, 195)); //error can be set to anything
-	//error = sand; 
+	Item<Color> error = new Item<Color>(new Color(255, 0, 195)); // error can be set to anything
+	// error = sand;
 
 //	ArrayList<Item<String>> list = new ArrayList<Item<String>>();
 //	Item<String> grass = new Item<String>("G");
@@ -54,7 +54,7 @@ public class Runner {
 	coast.add(ocean, 30);
 
 	ocean.add(coast, 20);
-	ocean.add(ocean, 30);
+	ocean.add(ocean, 40);
 	// ocean.add(sand, 0); //this helps prevent some errors + not be giant fuck-off
 	// islands.
 	// ocean.add(grass, 0);
@@ -78,35 +78,47 @@ public class Runner {
 
 //	Grid<String> grid = new Grid<String>(100, 100, list, 5176930254552009688L);
 
-
 	// somegood seeds:
-	//let me note, increasing the size will increase the time it takes. Should be obvious though.
-	// 200x200:
+	// let me note, increasing the size will increase the time it takes. Should be
+	// obvious though.
+	// 200x200: 8206209682205551009, -627377344974473140
 	// 150x150:
-	// 100x100: -1918627471075256442, 5176930254552009688, 7794176660258022025, 5208855863618711882
+	// 100x100: -1918627471075256442, 5176930254552009688, 7794176660258022025,
+	// 5208855863618711882
 
 	// testing
-	//GUI<Item<Color>> window = new GUI<Item<Color>>(list, 100, 100);
+	// GUI<Item<Color>> window = new GUI<Item<Color>>(list, 200, 200);
+	// 53056. 51650
 
+	// much faster to generate small amounts at a time.
 	long startTime = System.currentTimeMillis();
-	Grid<Color> grid = new Grid<Color>(100, 100, list);
-	
 
-	//System.out.println(grid);
-	try {
-	    while (true) {
-		grid.placeWeightedSquare();
+	int width = 200;
+	int height = 200;
+
+	Grid<Color> grid = new Grid<Color>(50, 50, list);
+
+	int currentWidth = 0;
+	int currentHeight = 0;
+
+	System.out.println("Starting");
+	while (currentWidth != width && currentHeight != height) {
+	    currentWidth+=50;
+	    currentHeight+=50;
+	    grid = new Grid<Color>(currentWidth, currentHeight, grid);
+	    try {
+		while (true) {
+		    grid.placeWeightedSquare();
+		}
+	    } catch (Exception e) {
+		// e.printStackTrace();
 	    }
-	} catch (Exception e) {
-	    // e.printStackTrace();
 	}
-	//System.out.println(grid);
+	// GUI<Item<Color>> window = new GUI<Item<Color>>(grid);
 
-	//grid = new Grid(5, 10, grid, 0);
 	GUI<Item<Color>> window = new GUI<Item<Color>>(grid);
-	
+
 	long endTime = System.currentTimeMillis();
-	//System.out.println(grid);
 	System.out.println(endTime - startTime);
 
     }

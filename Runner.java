@@ -96,15 +96,15 @@ public class Runner {
 	int width = 200;
 	int height = 200;
 
-	Grid<Color> grid = new Grid<Color>(50, 50, list);
+	Grid<Color> grid = new Grid<Color>(5, 5, list, 123);
 
 	int currentWidth = 0;
 	int currentHeight = 0;
 
 	System.out.println("Starting");
 	while (currentWidth != width && currentHeight != height) {
-	    currentWidth+=50;
-	    currentHeight+=50;
+	    currentWidth+=8;
+	    currentHeight+=8;
 	    grid = new Grid<Color>(currentWidth, currentHeight, grid);
 	    try {
 		while (true) {

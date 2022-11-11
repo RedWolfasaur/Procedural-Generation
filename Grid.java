@@ -359,10 +359,34 @@ public class Grid<T> {
     public void remove(int x, int y) {
 	ArrayList<Item<T>> t = new ArrayList<Item<T>>();
 	t.addAll(itemList.subList(0, itemList.size() - 1));
+	
+	/*
+	boolean[] dirCheck = testDirection(x, y);
+	if (dirCheck[0] && (gridArray[y + 1][x].getData() != null)) {
+	    gridArray[y][x] = new Item<T>(gridArray[y + 1][x].getData(), x, y + 1, itemList.size() - 1, t);
+	    calculateSurroundings(x, y + 1);
+
+	}
+	if (dirCheck[1] && (gridArray[y][x+1].getData() != null)) {
+	    gridArray[y][x + 1] = new Item<T>(gridArray[y][x+1].getData(), x + 1, y, itemList.size() - 1, t);
+	    calculateSurroundings(x + 1, y);
+
+	}
+	if (dirCheck[2] && (gridArray[y - 1][x].getData() != null)) {
+	    gridArray[y - 1][x] = new Item<T>(gridArray[y - 1][x].getData(), x, y - 1, itemList.size() - 1, t);
+	    calculateSurroundings(x, y-1);
+
+	}
+	if (dirCheck[3] && (gridArray[y][x - 1].getData() != null)) {
+	    gridArray[y][x - 1] = new Item<T>(gridArray[y][x - 1].getData(), x - 1, y, itemList.size() - 1, t);
+	    calculateSurroundings(x - 1, y);
+	}
+	
+	*/
 	boolean[] dirCheck = testDirection(x, y);
 	if (dirCheck[0]) {
 	    gridArray[y + 1][x] = new Item<T>(null, x, y + 1, itemList.size() - 1, t);
-	    calculateSurroundings(x, y - 1);
+	    calculateSurroundings(x, y + 1);
 
 	}
 	if (dirCheck[1]) {
@@ -377,7 +401,11 @@ public class Grid<T> {
 	}
 	if (dirCheck[3]) {
 	    gridArray[y][x - 1] = new Item<T>(null, x - 1, y, itemList.size() - 1, t);
+	    calculateSurroundings(x - 1, y);
 	}
+	
+	
+	
 
     }
 

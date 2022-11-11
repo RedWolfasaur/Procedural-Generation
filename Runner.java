@@ -96,7 +96,7 @@ public class Runner {
 	int width = 200;
 	int height = 200;
 
-	Grid<Color> grid = new Grid<Color>(5, 5, list);
+	Grid<Color> grid = new Grid<Color>(5, 5, list, 123);
 
 	int currentWidth = 0;
 	int currentHeight = 0;

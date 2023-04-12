@@ -178,7 +178,7 @@ public class Runner {
 		
 		
 		gui = new NewGUI(newGrid);
-		gui.writeBI(String.format("C:\\Users\\Wesley\\Downloads\\Test\\%d_%dx%d.png", newGrid.getSeed(), newGrid.getX(), newGrid.getY()));
+		gui.writeBI(String.format("%d_%dx%d.png", newGrid.getSeed(), newGrid.getX(), newGrid.getY()));
 		
 		gui.setGUI();
 		
@@ -195,50 +195,6 @@ public class Runner {
 		}
 		
 		System.out.println("Finished^2");
-
-		// This method is faster when size < 100
-//		
-//		startTime = System.currentTimeMillis();
-//		
-//		grid = new Grid<Color>(5, 5, list, 8096394144706093395L);
-//		
-//		width = size * 2;
-//		height = size * 2;
-//		
-//		currentWidth = 0;
-//		currentHeight = 0;
-//		
-//		System.out.println("Starting");
-//		while (currentWidth < width || currentHeight < height) {
-//			if (currentWidth + 8 > width) {
-//				currentWidth = width;
-//			}
-//			else {
-//				currentWidth += 8;
-//			}
-//			if (currentHeight + 8  > height) {
-//				currentHeight = height;
-//			}
-//			else {
-//				currentHeight += 8;
-//			}
-//			
-//			//grid = new Grid<Color>(currentWidth, currentHeight, grid);
-//			grid = new Grid<Color>(currentWidth, currentHeight, grid);
-//			try {
-//				while (true) {
-//					grid.placeWeightedSquare();
-//				}
-//			} catch (Exception e) {
-//				//System.out.println(currentHeight);
-//				// e.printStackTrace();
-//			}
-//		}
-//				
-//		long endTime = System.currentTimeMillis();
-//		GUI<Item<Color>> window = new GUI<Item<Color>>(grid);
-//		//System.out.println(grid);
-//		System.out.println(endTime - startTime);
 
 	}
 

@@ -159,8 +159,7 @@ public class gridList<T> {
 	}
 
 	public Grid toGrid() {
-		Grid newGrid = new Grid(64 * gridArray[0].length, 64 * gridArray.length, gridArray[0][0].getItems(),
-				gridArray[0][0].getSeed());
+		Grid newGrid = new Grid(64 * gridArray[0].length, 64 * gridArray.length, gridArray[0][0].getItems(), gridArray[0][0].getSeed());
 
 		// iterates through gridList
 		for (int x = 0; x < gridArray[0].length; x++) {
@@ -170,8 +169,7 @@ public class gridList<T> {
 				for (int gridX = 0; gridX < 64; gridX++) {
 					for (int gridY = 0; gridY < 64; gridY++) {
 						if (gridArray[y][x] == null) {
-							newGrid.forceAdd(new Item(null, gridX, gridY, gridArray[0][0].getItems()), (x * 64) + gridX,
-									(y * 64) + gridY);
+							newGrid.forceAdd(new Item(null, gridX, gridY, gridArray[0][0].getItems()), (x * 64) + gridX, (y * 64) + gridY);
 							continue;
 						}
 						newGrid.forceAdd(gridArray[y][x].getGrid()[gridY][gridX], (x * 64) + gridX, (y * 64) + gridY);
